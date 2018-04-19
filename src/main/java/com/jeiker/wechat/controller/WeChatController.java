@@ -3,18 +3,16 @@ package com.jeiker.wechat.controller;
 import com.jeiker.wechat.util.digest.EncryptUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 
 @RestController
-@RequestMapping("/wechat")
 @Slf4j
 public class WeChatController {
 
-    // URL:   http://www.xxxx.com/wechat/
+    // URL:   http://www.xxxx.com/wechat
     // Token: 此处TOKEN即为微信接口配置信息的Token
 
     private static final String TOKEN = "wechat";
@@ -30,7 +28,7 @@ public class WeChatController {
      * @param echostr   随机字符串
      * @return echostr
      */
-    @GetMapping("/")
+    @GetMapping("/wechat")
     public String checkName(@RequestParam(name = "signature") String signature,
                             @RequestParam(name = "timestamp") String timestamp,
                             @RequestParam(name = "nonce") String nonce,
