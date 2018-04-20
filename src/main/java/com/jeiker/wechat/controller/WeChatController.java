@@ -1,17 +1,14 @@
 package com.jeiker.wechat.controller;
 
+import com.jeiker.wechat.model.vo.RequestMessageXml;
 import com.jeiker.wechat.model.vo.TextMessageXml;
 import com.jeiker.wechat.util.digest.EncryptUtil;
-import com.jeiker.wechat.util.message.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/wechat")
@@ -110,7 +107,7 @@ public class WeChatController {
     }
     */
     @PostMapping(value = "", produces = {"application/xml;charset=UTF-8"})
-    public TextMessageXml doPost(@RequestBody TextMessageXml requestMessage) {
+    public TextMessageXml doPost(@RequestBody RequestMessageXml requestMessage) {
         String toUserName = requestMessage.getToUserName();
         String fromUserName = requestMessage.getFromUserName();
         String msgType = requestMessage.getMsgType();

@@ -7,27 +7,13 @@ import lombok.Data;
 
 @Data
 @JacksonXmlRootElement(localName = "xml")
-public class TextMessageXml {
+public class TextMessageXml extends BaseMessageXml{
 
-    @JacksonXmlCData
-    @JacksonXmlProperty(localName = "ToUserName")
-    private String toUserName;
-
-    @JacksonXmlCData
-    @JacksonXmlProperty(localName = "FromUserName")
-    private String fromUserName;
-
-    @JacksonXmlProperty(localName = "CreateTime")
-    private Long createTime;
-
-    @JacksonXmlCData
-    @JacksonXmlProperty(localName = "MsgType")
-    private String msgType;
-
+    /**
+     * 文本消息
+     */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Content")
     private String content;
 
-    @JacksonXmlProperty(localName = "MsgId")
-    private String msgId;
 }
