@@ -1,14 +1,21 @@
 package com.jeiker.wechat.controller;
 
 import com.jeiker.wechat.util.digest.EncryptUtil;
+import com.jeiker.wechat.util.message.MessageUtil;
+import com.jeiker.wechat.util.message.TextMessageUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Map;
 
 @RestController
+@RequestMapping("/wechat")
 @Slf4j
 public class WeChatController {
 
@@ -19,7 +26,7 @@ public class WeChatController {
 
     /**
      * 验证微信后台配置的服务器地址有效性
-     *
+     * <p>
      * 接收并校验四个请求参数
      *
      * @param signature 微信加密签名
@@ -28,7 +35,7 @@ public class WeChatController {
      * @param echostr   随机字符串
      * @return echostr
      */
-    @GetMapping("/wechat")
+    @GetMapping("")
     public String checkName(@RequestParam(name = "signature") String signature,
                             @RequestParam(name = "timestamp") String timestamp,
                             @RequestParam(name = "nonce") String nonce,
@@ -61,6 +68,7 @@ public class WeChatController {
 
     /**
      * 排序方法
+     *
      * @param token     Token
      * @param timestamp 时间戳
      * @param nonce     随机数
@@ -76,5 +84,33 @@ public class WeChatController {
         return sb.toString();
     }
 
-
+    @PostMapping("")
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
+        response.setCharacterEncoding("utf-8");
+        PrintWriter out = null;
+        //将微信请求xml转为map格式，获取所需的参数
+        Map<String, String> map = MessageUtil.xmlToMap(request);
+        String toUserName = map.get("ToUserName");
+        String fromUserName = map.get("FromUserName");
+        String msgType = map.get("MsgType");
+        String content = map.get("Content");
+        log.info("【接收到微信消息】- {}", content);
+        String message = null;
+        //处理文本类型
+        if ("text".equals(msgType)) {
+            if (!StringUtils.isEmpty(content)) {
+                TextMessageUtil textMessage = new TextMessageUtil();
+                message = textMessage.initMessage(fromUserName, toUserName);
+            }
+        }
+        try {
+            out = response.getWriter();
+            out.write(message);
+            log.info("【回复微信消息】:\n{}", message);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        out.close();
+    }
 }
