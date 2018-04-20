@@ -25,7 +25,4 @@ public class BaseMessageXml {
     @JacksonXmlProperty(localName = "MsgType")
     private String msgType;
 
-    @JacksonXmlProperty(localName = "MsgId")
-    private String msgId;
-
 }

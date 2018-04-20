@@ -9,6 +9,9 @@ import lombok.Data;
 @JacksonXmlRootElement(localName = "xml")
 public class RequestMessageXml extends BaseMessageXml{
 
+    @JacksonXmlProperty(localName = "MsgId")
+    private String msgId;
+
     /**
      * 文本消息
      */

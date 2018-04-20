@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -25,7 +27,6 @@ public class HelloController {
         messageXml.setCreateTime(12341234141L);
         messageXml.setMsgType("text");
         messageXml.setContent("你好啊");
-        messageXml.setMsgId("123412341341");
         return messageXml;
     }
 
@@ -36,9 +37,9 @@ public class HelloController {
         messageXml.setFromUserName("jeiker");
         messageXml.setCreateTime(12341234141L);
         messageXml.setMsgType("image");
-        messageXml.setPicUrl("http://www.baidu.com");
-        messageXml.setMediaId("12341234141241234124");
-        messageXml.setMsgId("123412341341");
+        MediaIdElement mediaIdElement = new MediaIdElement();
+        mediaIdElement.setMediaId("12341234");
+        messageXml.setImage(mediaIdElement);
         return messageXml;
     }
 
@@ -49,9 +50,9 @@ public class HelloController {
         messageXml.setFromUserName("jeiker");
         messageXml.setCreateTime(12341234141L);
         messageXml.setMsgType("voice");
-        messageXml.setFormat("format");
-        messageXml.setMediaId("12341234141241234124");
-        messageXml.setMsgId("123412341341");
+        MediaIdElement mediaIdElement = new MediaIdElement();
+        mediaIdElement.setMediaId("12341234");
+        messageXml.setVoice(mediaIdElement);
         return messageXml;
     }
 
@@ -62,38 +63,61 @@ public class HelloController {
         messageXml.setFromUserName("jeiker");
         messageXml.setCreateTime(12341234141L);
         messageXml.setMsgType("video");
-        messageXml.setMediaId("aasdfasdf");
-        messageXml.setThumbMediaId("asdfasfasffasd134123");
-        messageXml.setMsgId("123412341341");
+        VideoElement videoElement = new VideoElement();
+        videoElement.setDescription("descasdfasdf");
+        videoElement.setMediaId("asdfasdfadsf12341");
+        videoElement.setTitle("asdfasdfasdf");
+        messageXml.setVideo(videoElement);
         return messageXml;
     }
 
-    @GetMapping(value = "/location", produces = {"application/xml;charset=UTF-8"})
-    public LocationMessageXml getLocation() {
-        LocationMessageXml messageXml = new LocationMessageXml();
-        messageXml.setToUserName("xiao");
-        messageXml.setFromUserName("jeiker");
-        messageXml.setCreateTime(12341234141L);
-        messageXml.setMsgType("location");
-        messageXml.setLocationX("23.3241241223");
-        messageXml.setLocationY("23.2413124312");
-        messageXml.setScale("2");
-        messageXml.setLabel("长沙");
-        messageXml.setMsgId("123412341341");
-        return messageXml;
-    }
-
-    @GetMapping(value = "/link", produces = {"application/xml;charset=UTF-8"})
-    public LinkMessageXml getLink() {
-        LinkMessageXml messageXml = new LinkMessageXml();
+    @GetMapping(value = "/music", produces = {"application/xml;charset=UTF-8"})
+    public MusicMessageXml getLink() {
+        MusicMessageXml messageXml = new MusicMessageXml();
         messageXml.setToUserName("xiao");
         messageXml.setFromUserName("jeiker");
         messageXml.setCreateTime(12341234141L);
         messageXml.setMsgType("text");
-        messageXml.setTitle("百度");
-        messageXml.setDescription("百度首页");
-        messageXml.setUrl("http://www.baidu.com");
-        messageXml.setMsgId("123412341341");
+        MusicElement musicElement = new MusicElement();
+        musicElement.setDescription("asdfkasdf");
+        musicElement.setHqMusicUrl("asdfasdfasdf");
+        musicElement.setMusicUrl("asdfkjalsdf");
+        musicElement.setThumbMediaId("q23412341234reqaw");
+        musicElement.setTitle("asdfkjasdlkf");
+        messageXml.setMusic(musicElement);
+        return messageXml;
+    }
+
+    @GetMapping(value = "/article", produces = {"application/xml;charset=UTF-8"})
+    public ArticlesMessageXml getArticle() {
+        ArticlesMessageXml messageXml = new ArticlesMessageXml();
+        messageXml.setToUserName("xiao");
+        messageXml.setFromUserName("jeiker");
+        messageXml.setCreateTime(12341234141L);
+        messageXml.setMsgType("text");
+        MusicElement musicElement = new MusicElement();
+        musicElement.setDescription("asdfkasdf");
+        musicElement.setHqMusicUrl("asdfasdfasdf");
+        musicElement.setMusicUrl("asdfkjalsdf");
+        musicElement.setThumbMediaId("q23412341234reqaw");
+        musicElement.setTitle("asdfkjasdlkf");
+        List<ArticleElement> articleElementList = new ArrayList<>();
+        ArticleElement articleElement1 = new ArticleElement();
+        articleElement1.setDescription("asdfasdfa");
+        articleElement1.setPicUrl("asdfasdf");
+        articleElement1.setTitle("asdlfka;sd");
+        articleElement1.setUrl("asaklsdfjl;asdf");
+        articleElementList.add(articleElement1);
+
+        ArticleElement articleElement2 = new ArticleElement();
+        articleElement2.setDescription("asdfasdfa");
+        articleElement2.setPicUrl("asdfasdf");
+        articleElement2.setTitle("asdlfka;sd");
+        articleElement2.setUrl("asaklsdfjl;asdf");
+        articleElementList.add(articleElement2);
+
+        messageXml.setArticleCount(articleElementList.size());
+        messageXml.setArticles(articleElementList);
         return messageXml;
     }
 }

@@ -91,42 +91,36 @@ public class WeChatController {
                 BeanUtils.copyProperties(requestMessage, textMessageXml);
                 textMessageXml.setToUserName(fromUserName);
                 textMessageXml.setFromUserName(toUserName);
-                textMessageXml.setMsgId("1234567890123456");
                 return textMessageXml;
             case "image":
                 ImageMessageXml imageMessageXml = new ImageMessageXml();
                 BeanUtils.copyProperties(requestMessage, imageMessageXml);
                 imageMessageXml.setToUserName(fromUserName);
                 imageMessageXml.setFromUserName(toUserName);
-                imageMessageXml.setMsgId("1234567890123456");
                 return imageMessageXml;
             case "voice":
                 VoiceMessageXml voiceMessageXml = new VoiceMessageXml();
                 BeanUtils.copyProperties(requestMessage, voiceMessageXml);
                 voiceMessageXml.setToUserName(fromUserName);
                 voiceMessageXml.setFromUserName(toUserName);
-                voiceMessageXml.setMsgId("1234567890123456");
                 return voiceMessageXml;
             case "video":
                 VideoMessageXml videoMessageXml = new VideoMessageXml();
                 BeanUtils.copyProperties(requestMessage, videoMessageXml);
                 videoMessageXml.setToUserName(fromUserName);
                 videoMessageXml.setFromUserName(toUserName);
-                videoMessageXml.setMsgId("1234567890123456");
                 return videoMessageXml;
             case "location":
                 LocationMessageXml locationMessageXml = new LocationMessageXml();
                 BeanUtils.copyProperties(requestMessage, locationMessageXml);
                 locationMessageXml.setToUserName(fromUserName);
                 locationMessageXml.setFromUserName(toUserName);
-                locationMessageXml.setMsgId("1234567890123456");
                 return locationMessageXml;
             case "link":
                 LinkMessageXml linkMessageXml = new LinkMessageXml();
                 BeanUtils.copyProperties(requestMessage, linkMessageXml);
                 linkMessageXml.setToUserName(fromUserName);
                 linkMessageXml.setFromUserName(toUserName);
-                linkMessageXml.setMsgId("1234567890123456");
                 return linkMessageXml;
                 default:
                     return requestMessage;

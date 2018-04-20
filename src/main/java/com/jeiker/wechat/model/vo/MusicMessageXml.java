@@ -4,13 +4,16 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.Data;
 
+/**
+ * Created by Administrator on 2018/4/20 0020.
+ */
 @Data
 @JacksonXmlRootElement(localName = "xml")
-public class VoiceMessageXml extends BaseMessageXml{
+public class MusicMessageXml extends BaseMessageXml{
 
     /**
-     * 语音消息
+     * 音乐消息
      */
-    @JacksonXmlProperty(localName = "Voice")
-    private MediaIdElement voice;
+    @JacksonXmlProperty(localName = "Music")
+    private MusicElement music;
 }
