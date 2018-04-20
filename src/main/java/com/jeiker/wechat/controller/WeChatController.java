@@ -83,6 +83,7 @@ public class WeChatController {
         return sb.toString();
     }
 
+    /**
     @PostMapping(value = "", produces = {"application/xml;charset=UTF-8"})
     public TextMessageXml doPost(HttpServletRequest request, HttpServletResponse response) {
         response.setCharacterEncoding("utf-8");
@@ -105,6 +106,30 @@ public class WeChatController {
             }
         }
         log.info("【发送到微信的消息】- {}", messageXml);
+        return messageXml;
+    }
+    */
+    @PostMapping(value = "", produces = {"application/xml;charset=UTF-8"})
+    public TextMessageXml doPost(@RequestBody TextMessageXml requestMessage) {
+        String toUserName = requestMessage.getToUserName();
+        String fromUserName = requestMessage.getFromUserName();
+        String msgType = requestMessage.getMsgType();
+        String content = requestMessage.getContent();
+        log.info("【接收到微信的消息】: \n{}", requestMessage);
+        log.info("【接收到微信的消息】- {}", content);
+        //处理文本类型
+        TextMessageXml messageXml = new TextMessageXml();
+        if ("text".equals(msgType)) {
+            if (!StringUtils.isEmpty(content)) {
+                messageXml.setToUserName(fromUserName);
+                messageXml.setFromUserName(toUserName);
+                messageXml.setContent("欢迎你！");
+                messageXml.setCreateTime(new Date().getTime());
+                messageXml.setMsgType("text");
+            }
+        }
+        log.info("【发送到微信的消息】: \n{}", messageXml);
+        log.info("【发送到微信的消息】- {}", messageXml.getContent());
         return messageXml;
     }
 }
