@@ -1,14 +1,12 @@
 package com.jeiker.wechat.controller;
 
-import com.jeiker.wechat.model.vo.RequestMessageXml;
-import com.jeiker.wechat.model.vo.TextMessageXml;
+import com.jeiker.wechat.model.vo.*;
 import com.jeiker.wechat.util.digest.EncryptUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/wechat")
@@ -80,53 +78,58 @@ public class WeChatController {
         return sb.toString();
     }
 
-    /**
     @PostMapping(value = "", produces = {"application/xml;charset=UTF-8"})
-    public TextMessageXml doPost(HttpServletRequest request, HttpServletResponse response) {
-        response.setCharacterEncoding("utf-8");
-        //将微信请求xml转为map格式，获取所需的参数
-        Map<String, String> map = MessageUtil.xmlToMap(request);
-        String toUserName = map.get("ToUserName");
-        String fromUserName = map.get("FromUserName");
-        String msgType = map.get("MsgType");
-        String content = map.get("Content");
-        log.info("【接收到微信的消息】- {}", content);
-        //处理文本类型
-        TextMessageXml messageXml = new TextMessageXml();
-        if ("text".equals(msgType)) {
-            if (!StringUtils.isEmpty(content)) {
-                messageXml.setToUserName(fromUserName);
-                messageXml.setFromUserName(toUserName);
-                messageXml.setContent("欢迎关注666");
-                messageXml.setCreateTime(new Date().getTime());
-                messageXml.setMsgType("text");
-            }
-        }
-        log.info("【发送到微信的消息】- {}", messageXml);
-        return messageXml;
-    }
-    */
-    @PostMapping(value = "", produces = {"application/xml;charset=UTF-8"})
-    public TextMessageXml doPost(@RequestBody RequestMessageXml requestMessage) {
+    public Object doPost(@RequestBody RequestMessageXml requestMessage) {
         String toUserName = requestMessage.getToUserName();
         String fromUserName = requestMessage.getFromUserName();
         String msgType = requestMessage.getMsgType();
-        String content = requestMessage.getContent();
         log.info("【接收到微信的消息】: \n{}", requestMessage);
-        log.info("【接收到微信的消息】- {}", content);
-        //处理文本类型
-        TextMessageXml messageXml = new TextMessageXml();
-        if ("text".equals(msgType)) {
-            if (!StringUtils.isEmpty(content)) {
-                messageXml.setToUserName(fromUserName);
-                messageXml.setFromUserName(toUserName);
-                messageXml.setContent("欢迎你！");
-                messageXml.setCreateTime(new Date().getTime());
-                messageXml.setMsgType("text");
-            }
+
+        switch (msgType.trim()) {
+            case "text":
+                TextMessageXml textMessageXml = new TextMessageXml();
+                BeanUtils.copyProperties(requestMessage, textMessageXml);
+                textMessageXml.setToUserName(fromUserName);
+                textMessageXml.setFromUserName(toUserName);
+                textMessageXml.setMsgId("1234567890123456");
+                return textMessageXml;
+            case "image":
+                ImageMessageXml imageMessageXml = new ImageMessageXml();
+                BeanUtils.copyProperties(requestMessage, imageMessageXml);
+                imageMessageXml.setToUserName(fromUserName);
+                imageMessageXml.setFromUserName(toUserName);
+                imageMessageXml.setMsgId("1234567890123456");
+                return imageMessageXml;
+            case "voice":
+                VoiceMessageXml voiceMessageXml = new VoiceMessageXml();
+                BeanUtils.copyProperties(requestMessage, voiceMessageXml);
+                voiceMessageXml.setToUserName(fromUserName);
+                voiceMessageXml.setFromUserName(toUserName);
+                voiceMessageXml.setMsgId("1234567890123456");
+                return voiceMessageXml;
+            case "video":
+                VideoMessageXml videoMessageXml = new VideoMessageXml();
+                BeanUtils.copyProperties(requestMessage, videoMessageXml);
+                videoMessageXml.setToUserName(fromUserName);
+                videoMessageXml.setFromUserName(toUserName);
+                videoMessageXml.setMsgId("1234567890123456");
+                return videoMessageXml;
+            case "location":
+                LocationMessageXml locationMessageXml = new LocationMessageXml();
+                BeanUtils.copyProperties(requestMessage, locationMessageXml);
+                locationMessageXml.setToUserName(fromUserName);
+                locationMessageXml.setFromUserName(toUserName);
+                locationMessageXml.setMsgId("1234567890123456");
+                return locationMessageXml;
+            case "link":
+                LinkMessageXml linkMessageXml = new LinkMessageXml();
+                BeanUtils.copyProperties(requestMessage, linkMessageXml);
+                linkMessageXml.setToUserName(fromUserName);
+                linkMessageXml.setFromUserName(toUserName);
+                linkMessageXml.setMsgId("1234567890123456");
+                return linkMessageXml;
+                default:
+                    return requestMessage;
         }
-        log.info("【发送到微信的消息】: \n{}", messageXml);
-        log.info("【发送到微信的消息】- {}", messageXml.getContent());
-        return messageXml;
     }
 }
