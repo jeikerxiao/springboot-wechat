@@ -1,17 +1,16 @@
 package com.jeiker.wechat.controller;
 
+import com.jeiker.wechat.model.vo.TextMessageXml;
 import com.jeiker.wechat.util.digest.EncryptUtil;
 import com.jeiker.wechat.util.message.MessageUtil;
-import com.jeiker.wechat.util.message.TextMessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
 @RestController
@@ -84,33 +83,28 @@ public class WeChatController {
         return sb.toString();
     }
 
-    @PostMapping("")
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping(value = "", produces = {"application/xml;charset=UTF-8"})
+    public TextMessageXml doPost(HttpServletRequest request, HttpServletResponse response) {
         response.setCharacterEncoding("utf-8");
-        PrintWriter out = null;
         //将微信请求xml转为map格式，获取所需的参数
         Map<String, String> map = MessageUtil.xmlToMap(request);
         String toUserName = map.get("ToUserName");
         String fromUserName = map.get("FromUserName");
         String msgType = map.get("MsgType");
         String content = map.get("Content");
-        log.info("【接收到微信消息】- {}", content);
-        String message = null;
+        log.info("【接收到微信的消息】- {}", content);
         //处理文本类型
+        TextMessageXml messageXml = new TextMessageXml();
         if ("text".equals(msgType)) {
             if (!StringUtils.isEmpty(content)) {
-                TextMessageUtil textMessage = new TextMessageUtil();
-                message = textMessage.initMessage(fromUserName, toUserName);
+                messageXml.setToUserName(fromUserName);
+                messageXml.setFromUserName(toUserName);
+                messageXml.setContent("欢迎关注666");
+                messageXml.setCreateTime(new Date().getTime());
+                messageXml.setMsgType("text");
             }
         }
-        try {
-            out = response.getWriter();
-            out.write(message);
-            log.info("【回复微信消息】:\n{}", message);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        out.close();
+        log.info("【发送到微信的消息】- {}", messageXml);
+        return messageXml;
     }
 }

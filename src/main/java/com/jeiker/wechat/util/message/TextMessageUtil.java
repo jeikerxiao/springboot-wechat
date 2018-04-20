@@ -22,6 +22,7 @@ public class TextMessageUtil implements BaseMessageUtil{
         text.setContent("欢迎关注666");
         text.setCreateTime(new Date().getTime());
         text.setMsgType("text");
+        text.setMsgId("1234567890123456");
         return messageToXml(text);
     }
 }
