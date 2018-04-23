@@ -14,9 +14,9 @@ import java.util.Map;
 @Slf4j
 public class TokenController {
 
-    @Value("${wechat.mpAppId}")
+    @Value("${wechat.app-id}")
     private String appid;
-    @Value("${wechat.mpAppSecret}")
+    @Value("${wechat.app-secret}")
     private String secret;
 
     @GetMapping("/token")
