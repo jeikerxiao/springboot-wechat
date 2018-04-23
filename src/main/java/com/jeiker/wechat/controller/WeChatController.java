@@ -2,6 +2,8 @@ package com.jeiker.wechat.controller;
 
 import com.jeiker.wechat.model.vo.*;
 import com.jeiker.wechat.util.digest.EncryptUtil;
+import com.jeiker.wechat.util.enums.WeChatEventType;
+import com.jeiker.wechat.util.enums.WeChatMsgType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -79,7 +81,7 @@ public class WeChatController {
     }
 
     @PostMapping(value = "", produces = {"application/xml;charset=UTF-8"})
-    public Object doPost(@RequestBody RequestMessageXml requestMessage) {
+    public Object getWeChatMessage(@RequestBody RequestMessageXml requestMessage) {
         String toUserName = requestMessage.getToUserName();
         String fromUserName = requestMessage.getFromUserName();
         String msgType = requestMessage.getMsgType();
@@ -88,13 +90,13 @@ public class WeChatController {
         log.info("【接收到微信的消息】: \n{}", requestMessage);
         log.info("【接收到微信的消息类型】: \n{}", msgType.trim());
         switch (msgType.trim()) {
-            case "text":
+            case WeChatMsgType.TEXT:
                 TextMessageXml textMessageXml = new TextMessageXml();
                 BeanUtils.copyProperties(requestMessage, textMessageXml);
                 textMessageXml.setToUserName(fromUserName);
                 textMessageXml.setFromUserName(toUserName);
                 return textMessageXml;
-            case "image":
+            case WeChatMsgType.IMAGE:
                 ImageMessageXml imageMessageXml = new ImageMessageXml();
                 BeanUtils.copyProperties(requestMessage, imageMessageXml);
                 imageMessageXml.setToUserName(fromUserName);
@@ -103,7 +105,7 @@ public class WeChatController {
                 imageMediaId.setMediaId(mediaId);
                 imageMessageXml.setImage(imageMediaId);
                 return imageMessageXml;
-            case "voice":
+            case WeChatMsgType.VOICE:
                 VoiceMessageXml voiceMessageXml = new VoiceMessageXml();
                 BeanUtils.copyProperties(requestMessage, voiceMessageXml);
                 voiceMessageXml.setToUserName(fromUserName);
@@ -112,7 +114,7 @@ public class WeChatController {
                 voiceMediaId.setMediaId(mediaId);
                 voiceMessageXml.setVoice(voiceMediaId);
                 return voiceMessageXml;
-            case "video":
+            case WeChatMsgType.VIDEO:
                 VideoMessageXml videoMessageXml = new VideoMessageXml();
                 BeanUtils.copyProperties(requestMessage, videoMessageXml);
                 videoMessageXml.setToUserName(fromUserName);
@@ -123,37 +125,39 @@ public class WeChatController {
                 videoElement.setDescription("视频描述");
                 videoMessageXml.setVideo(videoElement);
                 return videoMessageXml;
-            case "location":
+            case WeChatMsgType.LOCATION:
                 TextMessageXml locationTextMessageXml = new TextMessageXml();
                 BeanUtils.copyProperties(requestMessage, locationTextMessageXml);
                 locationTextMessageXml.setToUserName(fromUserName);
                 locationTextMessageXml.setFromUserName(toUserName);
+                locationTextMessageXml.setMsgType(WeChatMsgType.TEXT);
                 locationTextMessageXml.setContent(requestMessage.getLabel());
                 return locationTextMessageXml;
-            case "link":
+            case WeChatMsgType.LINK:
                 TextMessageXml linkTextMessageXml = new TextMessageXml();
                 BeanUtils.copyProperties(requestMessage, linkTextMessageXml);
                 linkTextMessageXml.setToUserName(fromUserName);
                 linkTextMessageXml.setFromUserName(toUserName);
+                linkTextMessageXml.setMsgType(WeChatMsgType.TEXT);
                 linkTextMessageXml.setContent(requestMessage.getTitle() +
                         "-" + requestMessage.getDescription() +
                         "-" + requestMessage.getUrl());
                 return linkTextMessageXml;
-            case "event":
+            case WeChatMsgType.EVENT:
                 switch (requestMessage.getEvent().trim()) {
-                    case "subscribe":
+                    case WeChatEventType.SUBSCRIBE:
                         log.info("【事件推送】- 用户未关注时，进行关注后的事件推送。");
                         break;
-                    case "SCAN":
+                    case WeChatEventType.SCAN:
                         log.info("【事件推送】- 用户已关注时，进行关注后的事件推送。");
                         break;
-                    case "LOCATION":
+                    case WeChatEventType.LOCATION:
                         log.info("【事件推送】- 上报地理位置事件推送。");
                         break;
-                    case "CLICK":
+                    case WeChatEventType.CLICK:
                         log.info("【事件推送】- 点击菜单拉取消息时的事件推送。");
                         break;
-                    case "VIEW":
+                    case WeChatEventType.VIEW:
                         log.info("【事件推送】- 点击菜单跳转链接时的事件推送。");
                         break;
                 }
