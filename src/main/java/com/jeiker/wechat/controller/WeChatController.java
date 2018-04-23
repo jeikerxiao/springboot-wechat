@@ -86,7 +86,7 @@ public class WeChatController {
 
         String mediaId = requestMessage.getMediaId();
         log.info("【接收到微信的消息】: \n{}", requestMessage);
-
+        log.info("【接收到微信的消息类型】: \n{}", msgType.trim());
         switch (msgType.trim()) {
             case "text":
                 TextMessageXml textMessageXml = new TextMessageXml();
@@ -118,23 +118,45 @@ public class WeChatController {
                 videoMessageXml.setToUserName(fromUserName);
                 videoMessageXml.setFromUserName(toUserName);
                 VideoElement videoElement = new VideoElement();
-                videoElement.setMediaId(mediaId);
-                videoElement.setTitle(requestMessage.getTitle());
-                videoElement.setDescription(requestMessage.getDescription());
+                videoElement.setMediaId("032eCJ4YALmZPCGuWkKYXRAhdFS88DVyNnBW-LcmPspJwekB_uwpcmgL_sJZ2czd");
+                videoElement.setTitle("视频标题");
+                videoElement.setDescription("视频描述");
                 videoMessageXml.setVideo(videoElement);
                 return videoMessageXml;
             case "location":
-                LocationMessageXml locationMessageXml = new LocationMessageXml();
-                BeanUtils.copyProperties(requestMessage, locationMessageXml);
-                locationMessageXml.setToUserName(fromUserName);
-                locationMessageXml.setFromUserName(toUserName);
-                return locationMessageXml;
+                TextMessageXml locationTextMessageXml = new TextMessageXml();
+                BeanUtils.copyProperties(requestMessage, locationTextMessageXml);
+                locationTextMessageXml.setToUserName(fromUserName);
+                locationTextMessageXml.setFromUserName(toUserName);
+                locationTextMessageXml.setContent(requestMessage.getLabel());
+                return locationTextMessageXml;
             case "link":
-                LinkMessageXml linkMessageXml = new LinkMessageXml();
-                BeanUtils.copyProperties(requestMessage, linkMessageXml);
-                linkMessageXml.setToUserName(fromUserName);
-                linkMessageXml.setFromUserName(toUserName);
-                return linkMessageXml;
+                TextMessageXml linkTextMessageXml = new TextMessageXml();
+                BeanUtils.copyProperties(requestMessage, linkTextMessageXml);
+                linkTextMessageXml.setToUserName(fromUserName);
+                linkTextMessageXml.setFromUserName(toUserName);
+                linkTextMessageXml.setContent(requestMessage.getTitle() +
+                        "-" + requestMessage.getDescription() +
+                        "-" + requestMessage.getUrl());
+                return linkTextMessageXml;
+            case "event":
+                switch (requestMessage.getEvent().trim()) {
+                    case "subscribe":
+                        log.info("【事件推送】- 用户未关注时，进行关注后的事件推送。");
+                        break;
+                    case "SCAN":
+                        log.info("【事件推送】- 用户已关注时，进行关注后的事件推送。");
+                        break;
+                    case "LOCATION":
+                        log.info("【事件推送】- 上报地理位置事件推送。");
+                        break;
+                    case "CLICK":
+                        log.info("【事件推送】- 点击菜单拉取消息时的事件推送。");
+                        break;
+                    case "VIEW":
+                        log.info("【事件推送】- 点击菜单跳转链接时的事件推送。");
+                        break;
+                }
                 default:
                     return requestMessage;
         }

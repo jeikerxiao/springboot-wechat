@@ -74,4 +74,29 @@ public class RequestMessageXml extends BaseMessageXml{
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Url")
     private String url;
+
+    /**
+     * 事件推送
+     */
+    @JacksonXmlCData
+    @JacksonXmlProperty(localName = "Event")
+    private String event;
+
+    @JacksonXmlCData
+    @JacksonXmlProperty(localName = "EventKey")
+    private String eventKey;
+
+    @JacksonXmlCData
+    @JacksonXmlProperty(localName = "Ticket")
+    private String ticket;
+
+    @JacksonXmlProperty(localName = "Latitude")
+    private String latitude;
+
+    @JacksonXmlProperty(localName = "Longitude")
+    private String longitude;
+
+    @JacksonXmlProperty(localName = "Precision")
+    private String precision;
+
 }
