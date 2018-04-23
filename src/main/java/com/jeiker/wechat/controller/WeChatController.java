@@ -83,6 +83,8 @@ public class WeChatController {
         String toUserName = requestMessage.getToUserName();
         String fromUserName = requestMessage.getFromUserName();
         String msgType = requestMessage.getMsgType();
+
+        String mediaId = requestMessage.getMediaId();
         log.info("【接收到微信的消息】: \n{}", requestMessage);
 
         switch (msgType.trim()) {
@@ -97,18 +99,29 @@ public class WeChatController {
                 BeanUtils.copyProperties(requestMessage, imageMessageXml);
                 imageMessageXml.setToUserName(fromUserName);
                 imageMessageXml.setFromUserName(toUserName);
+                MediaIdElement imageMediaId = new MediaIdElement();
+                imageMediaId.setMediaId(mediaId);
+                imageMessageXml.setImage(imageMediaId);
                 return imageMessageXml;
             case "voice":
                 VoiceMessageXml voiceMessageXml = new VoiceMessageXml();
                 BeanUtils.copyProperties(requestMessage, voiceMessageXml);
                 voiceMessageXml.setToUserName(fromUserName);
                 voiceMessageXml.setFromUserName(toUserName);
+                MediaIdElement voiceMediaId = new MediaIdElement();
+                voiceMediaId.setMediaId(mediaId);
+                voiceMessageXml.setVoice(voiceMediaId);
                 return voiceMessageXml;
             case "video":
                 VideoMessageXml videoMessageXml = new VideoMessageXml();
                 BeanUtils.copyProperties(requestMessage, videoMessageXml);
                 videoMessageXml.setToUserName(fromUserName);
                 videoMessageXml.setFromUserName(toUserName);
+                VideoElement videoElement = new VideoElement();
+                videoElement.setMediaId(mediaId);
+                videoElement.setTitle(requestMessage.getTitle());
+                videoElement.setDescription(requestMessage.getDescription());
+                videoMessageXml.setVideo(videoElement);
                 return videoMessageXml;
             case "location":
                 LocationMessageXml locationMessageXml = new LocationMessageXml();
