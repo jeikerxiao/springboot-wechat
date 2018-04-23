@@ -6,6 +6,7 @@ import com.jeiker.wechat.util.enums.WeChatEventType;
 import com.jeiker.wechat.util.enums.WeChatMsgType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -18,7 +19,9 @@ public class WeChatController {
     // URL:   http://www.xxxx.com/wechat
     // Token: 此处TOKEN即为微信接口配置信息的Token
 
-    private static final String TOKEN = "wechat";
+//    private static final String TOKEN = "wechat";
+    @Value("${wechat.token}")
+    private String token;
 
     /**
      * 验证微信后台配置的服务器地址有效性
@@ -47,7 +50,7 @@ public class WeChatController {
          * 3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
          */
         // 1.排序
-        String sortString = sort(TOKEN, timestamp, nonce);
+        String sortString = sort(token, timestamp, nonce);
         // 2.sha1加密
         String myString = EncryptUtil.sha1(sortString);
         // 3.字符串校验
